@@ -28,42 +28,14 @@ container:
   memory: 32G
 
 cloning_task:
-  name: Cloning Project (Orangefox source)
+  name: 🦊 Orangefox
   timeout_in: 120m
-  script:
+  sync_script:
     - mkdir -p Orangefox
     - git config --global user.name "${USER_NAME}"
     - git config --global user.email "${USER_EMAIL}"
     - echo "${GITHUB_TOKEN}" >> ikitoken.txt
     - unset GITHUB_TOKEN
     - gh auth login --with-token < ikitoken.txt
-    - git clone --single-branch "${FOX_SYNC}" -b "${FOX_SYNC_BRANCH}" Orangefox/sync --depth=1
-  profdata_cache:
-    folder: Orangefox/sync
-    fingerprint_key: $CIRRUS_BUILD_ID
-
-sync_task:
-  depends_on:
-    - 'Cloning Project (Orangefox source)'
-  name: Sync Orangefox (sync)
-  timeout_in: 120m
-  profdata_cache:
-    folder: Orangefox/sync
-    folder: src/llvm-project
-    fingerprint_key: $CIRRUS_BUILD_ID
-  script:
-    - ./orangefox_sync.sh --branch "${FOX_SYNC_BRANCH}" --path OrangeFox/fox_"${FOX_SYNC_BRANCH}"
-
-# final_task:
-  # depends_on:
-    # - 'Build LLVM (profile)'
-  # name: Build LLVM (final)
-  # skip: "!changesInclude('build-datestamp')"
-  # timeout_in: 120m
-  # only_if: $CIRRUS_BRANCH == 'main'
-  # profdata_cache:
-    # folder: build/llvm/instrumented
-    # folder: src/llvm-project
-    # fingerprint_key: $CIRRUS_BUILD_ID
-  # script:
-    # - ./tc_scripts/init.sh final
+    - git clone --single-branch "${FOX_SYNC}" Orangefox/sync --depth=1
+    - cd Orangefox/sync && ./orangefox_sync.sh --branch "${FOX_SYNC_BRANCH}" --path OrangeFox/fox_"${FOX_SYNC_BRANCH}"
