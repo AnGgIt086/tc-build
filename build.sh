@@ -41,7 +41,7 @@ export ORF_TIME=${EV10}
 if [[ "${GH_RELEASE}" == true ]]; then
     source config.sh
     bash notes.sh
-    gh release create ${{ github.run_id }} ${CIRRUS_WORKING_DIR}/OrangeFox/fox_${FOX_SYNC_BRANCH}/out/target/product/${DEVICE_NAME}/OrangeFox*.zip ${CIRRUS_WORKING_DIR}/OrangeFox/fox_${FOX_SYNC_BRANCH}/out/target/product/${DEVICE_NAME}/OrangeFox*.zip.md5 --title "🦊 OrangeFox Recovery for ${DEVICE} (${CODENAME}) // ${BUILD_DATE}" -F ${CIRRUS_WORKING_DIR}/release-notes.md -R ${CIRRUS_REPO_CLONE_URL}
+    gh release create ${ORF_ID} ${CIRRUS_WORKING_DIR}/OrangeFox/fox_${FOX_SYNC_BRANCH}/out/target/product/${DEVICE_NAME}/OrangeFox*.zip ${CIRRUS_WORKING_DIR}/OrangeFox/fox_${FOX_SYNC_BRANCH}/out/target/product/${DEVICE_NAME}/OrangeFox*.zip.md5 --title "🦊 OrangeFox Recovery for ${DEVICE} (${CODENAME}) // ${BUILD_DATE}" -F ${CIRRUS_WORKING_DIR}/release-notes.md -R ${CIRRUS_REPO_CLONE_URL}
     post_message
 else
     echo "##########################################"
