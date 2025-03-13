@@ -4,9 +4,6 @@ set +e
 source config.sh
 timeStart
 cd ${CIRRUS_WORKING_DIR}/OrangeFox/fox_${FOX_SYNC_BRANCH}
-echo "##########################################"
-echo "$(figlet "OrageFox")"
-echo "##########################################"
 source build/envsetup.sh
 export ALLOW_MISSING_DEPENDENCIES=true
 BUILDLOG="${CIRRUS_WORKING_DIR}/OrangeFox/fox_${FOX_SYNC_BRANCH}/build.log"
@@ -43,10 +40,6 @@ if [[ "${GH_RELEASE}" == true ]]; then
     bash notes.sh
     gh release create ${ORF_ID} ${CIRRUS_WORKING_DIR}/OrangeFox/fox_${FOX_SYNC_BRANCH}/out/target/product/${DEVICE_NAME}/OrangeFox*.zip ${CIRRUS_WORKING_DIR}/OrangeFox/fox_${FOX_SYNC_BRANCH}/out/target/product/${DEVICE_NAME}/OrangeFox*.zip.md5 --title "🦊 OrangeFox Recovery for ${DEVICE} (${CODENAME}) // ${BUILD_DATE}" -F ${CIRRUS_WORKING_DIR}/release-notes.md -R ${CIRRUS_REPO_CLONE_URL}
     post_message
-else
-    echo "##########################################"
-    echo "$(figlet "OrageFox")"
-    echo "##########################################"
 fi
 
 exit 0
