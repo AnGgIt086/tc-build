@@ -30,5 +30,7 @@ container:
 cloning_task:
   name: 🦊 Orangefox
   timeout_in: 120m
+  env_script:
+    - env
   sync_script:
     - bash "${CIRRUS_WORKING_DIR}"/sync.sh
