@@ -1,8 +1,8 @@
 env:
   TZ: Asia/Jakarta
-  ghuser_name: ENCRYPTED[]
-  ghuser_email: ENCRYPTED[]
-  GITHUB_TOKEN: ENCRYPTED[]
+  ghuser_name: ENCRYPTED[63ff776b9902b2dd153fe9503ba70a9abacd0d192335e8c3b3d1a0cd1a586c5aa0b8c7a7a921e359ba866c9a3ecff795]
+  ghuser_email: ENCRYPTED[e6311b58e2cbf1ec595db1ec83ec9cdad1f34a231e87402d758af8115588ca8408653f26385a5e75b47f38ccbb8a5747]
+  GITHUB_TOKEN: ENCRYPTED[fb6c50d6b1030aa42a3fd0a3d6d379eb4131c49e61e04726f10de750f3e615c6f4203afa002301593b2855b03f0f2b95]
   llvm_url: https://github.com/llvm/llvm-project.git
 
 container:
