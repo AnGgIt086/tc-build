@@ -1,51 +1,69 @@
 env:
   TZ: Asia/Jakarta
-  ghuser_name: ENCRYPTED[63ff776b9902b2dd153fe9503ba70a9abacd0d192335e8c3b3d1a0cd1a586c5aa0b8c7a7a921e359ba866c9a3ecff795]
-  ghuser_email: ENCRYPTED[e6311b58e2cbf1ec595db1ec83ec9cdad1f34a231e87402d758af8115588ca8408653f26385a5e75b47f38ccbb8a5747]
+  USER_NAME: ENCRYPTED[63ff776b9902b2dd153fe9503ba70a9abacd0d192335e8c3b3d1a0cd1a586c5aa0b8c7a7a921e359ba866c9a3ecff795]
+  USER_EMAIL: ENCRYPTED[e6311b58e2cbf1ec595db1ec83ec9cdad1f34a231e87402d758af8115588ca8408653f26385a5e75b47f38ccbb8a5747]
   GITHUB_TOKEN: ENCRYPTED[fb6c50d6b1030aa42a3fd0a3d6d379eb4131c49e61e04726f10de750f3e615c6f4203afa002301593b2855b03f0f2b95]
-  llvm_url: https://github.com/llvm/llvm-project.git
+  FOX_SYNC: https://gitlab.com/OrangeFox/sync.git
+  FOX_SYNC_BRANCH: 12.1
+  KERNEL_TREE:
+  KERNEL_BRANCH:
+  KERNEL_PATH:
+  DEVICE_TREE: https://github.com/UntuKemeng/ORF_device_vivo_1938.git
+  DEVICE_TREE_BRANCH: 12.1
+  DEVICE_PATH: device/vivo/1938
+  DEVICE_NAME: 1938
+  BUILD_TARGET: recovery
+  COMMON_TREE:
+  COMMON_BRANCH:
+  COMMON_PATH:
+  MAINTAINER_URL: https://i.ibb.co.com/8gyjXq06/maintainer.png
+  GH_RELEASE: true
+  TG_CHAT_ID: ENCRYPTED[dbe17326a9269b441f9b84e8db03689a959d4413f6d1e217737ae8afbab14287b1a8285303c5e94bc37b8a92de22265c]
+  TG_TOKEN: ENCRYPTED[7df5ff09770f675c1d6dbee3c406d8abe5d91c5f9ec38561ba92d3990e3db4e41e0baac309d3004ea59092c2cf9192fb]
+  CONFIG: config.sh
 
 container:
-  image: mhmmdfdlyas/dockerfile:t-ubuntu
+  image: mhmmdfdlyas/dockerfile:r-ubuntu
   cpu: 8
   memory: 32G
 
 cloning_task:
-  name: Cloning Project (llvm source)
-  skip: "!changesInclude('build-datestamp')"
+  name: Cloning Project (Orangefox source)
   timeout_in: 120m
-  only_if: $CIRRUS_BRANCH == 'main'
   script:
-    - git clone --single-branch "${llvm_url}" -b main src/llvm-project --depth=1
+    - mkdir -p Orangefox
+    - git config --global user.name "${USER_NAME}"
+    - git config --global user.email "${USER_EMAIL}"
+    - echo "${GITHUB_TOKEN}" >> ikitoken.txt
+    - unset GITHUB_TOKEN
+    - gh auth login --with-token < ikitoken.txt
+    - git clone --single-branch "${FOX_SYNC}" -b "${FOX_SYNC_BRANCH}" Orangefox/sync --depth=1
   profdata_cache:
-    folder: src/llvm-project
+    folder: Orangefox/sync
     fingerprint_key: $CIRRUS_BUILD_ID
 
-profile_task:
+sync_task:
   depends_on:
-    - 'Cloning Project (llvm source)'
-  name: Build LLVM (profile)
-  skip: "!changesInclude('build-datestamp')"
+    - 'Cloning Project (Orangefox source)'
+  name: Sync Orangefox (sync)
   timeout_in: 120m
-  only_if: $CIRRUS_BRANCH == 'main'
   profdata_cache:
-    folder: build/llvm/instrumented
+    folder: Orangefox/sync
     folder: src/llvm-project
     fingerprint_key: $CIRRUS_BUILD_ID
   script:
-    - ./tc_scripts/init.sh profile
-    - find build/llvm/instrumented -type f ! -name 'profdata.prof' -delete
+    - ./orangefox_sync.sh --branch "${FOX_SYNC_BRANCH}" --path OrangeFox/fox_"${FOX_SYNC_BRANCH}"
 
-final_task:
-  depends_on:
-    - 'Build LLVM (profile)'
-  name: Build LLVM (final)
-  skip: "!changesInclude('build-datestamp')"
-  timeout_in: 120m
-  only_if: $CIRRUS_BRANCH == 'main'
-  profdata_cache:
-    folder: build/llvm/instrumented
-    folder: src/llvm-project
-    fingerprint_key: $CIRRUS_BUILD_ID
-  script:
-    - ./tc_scripts/init.sh final
+# final_task:
+  # depends_on:
+    # - 'Build LLVM (profile)'
+  # name: Build LLVM (final)
+  # skip: "!changesInclude('build-datestamp')"
+  # timeout_in: 120m
+  # only_if: $CIRRUS_BRANCH == 'main'
+  # profdata_cache:
+    # folder: build/llvm/instrumented
+    # folder: src/llvm-project
+    # fingerprint_key: $CIRRUS_BUILD_ID
+  # script:
+    # - ./tc_scripts/init.sh final
