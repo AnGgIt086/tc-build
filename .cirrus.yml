@@ -31,11 +31,11 @@ cloning_task:
   name: 🦊 Orangefox
   timeout_in: 120m
   sync_script:
-    - mkdir -p Orangefox
+    - mkdir -p "${CIRRUS_WORKING_DIR}"/Orangefox
     - git config --global user.name "${USER_NAME}"
     - git config --global user.email "${USER_EMAIL}"
     - echo "${GITHUB_TOKEN}" >> ikitoken.txt
     - unset GITHUB_TOKEN
     - gh auth login --with-token < ikitoken.txt
-    - git clone --single-branch "${FOX_SYNC}" Orangefox/sync --depth=1
-    - cd Orangefox/sync && ./orangefox_sync.sh --branch "${FOX_SYNC_BRANCH}" --path OrangeFox/fox_"${FOX_SYNC_BRANCH}"
+    - git clone --single-branch "${FOX_SYNC}" "${CIRRUS_WORKING_DIR}"/Orangefox/sync --depth=1
+    - cd "${CIRRUS_WORKING_DIR}"/Orangefox/sync && ./orangefox_sync.sh --branch "${FOX_SYNC_BRANCH}" --path "${CIRRUS_WORKING_DIR}"/Orangefox/fox_"${FOX_SYNC_BRANCH}"
