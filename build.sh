@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set +e
-source config.sh
+source ${CONFIG}
 timeStart
 cd ${CIRRUS_WORKING_DIR}/OrangeFox/fox_${FOX_SYNC_BRANCH}
 source build/envsetup.sh
@@ -36,9 +36,10 @@ export ORF_REPONAME=${CIRRUS_REPO_NAME}
 export ORF_ID=${CIRRUS_BUILD_ID}
 export ORF_TIME=${EV10}
 if [[ "${GH_RELEASE}" == true ]]; then
-    source config.sh
+    cd ${CIRRUS_WORKING_DIR}
+    source ${CONFIG}
     bash notes.sh
-    gh release create ${ORF_ID} ${CIRRUS_WORKING_DIR}/OrangeFox/fox_${FOX_SYNC_BRANCH}/out/target/product/${DEVICE_NAME}/OrangeFox*.zip ${CIRRUS_WORKING_DIR}/OrangeFox/fox_${FOX_SYNC_BRANCH}/out/target/product/${DEVICE_NAME}/OrangeFox*.zip.md5 --title "🦊 OrangeFox Recovery for ${DEVICE} (${CODENAME}) // ${BUILD_DATE}" -F ${CIRRUS_WORKING_DIR}/release-notes.md -R ${CIRRUS_REPO_CLONE_URL}
+    gh release create ${ORF_ID} ${CIRRUS_WORKING_DIR}/OrangeFox/fox_${FOX_SYNC_BRANCH}/out/target/product/${DEVICE_NAME}/OrangeFox*.zip ${CIRRUS_WORKING_DIR}/OrangeFox/fox_${FOX_SYNC_BRANCH}/out/target/product/${DEVICE_NAME}/OrangeFox*.zip.md5 --title "🦊 OrangeFox Recovery for ${DEVICE} (${DEVICE_NAME}) // ${BUILD_DATE}" -F ${CIRRUS_WORKING_DIR}/release-notes.md -R ${CIRRUS_REPO_CLONE_URL}
     post_message
 fi
 
